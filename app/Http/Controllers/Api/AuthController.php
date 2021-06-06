@@ -22,14 +22,42 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'nome' => 'required|string',
             'email' => 'required|string|email|unique:usuarios',
-            'cpf'=> 'required|string|min:12',
+            'cpf'=> 'required|string|min:12|unique',
             'telefone1' => 'required|string|min:7',
             'password' => 'required|string|confirmed',
             'fk_funcao_id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json(["error" => $validator->errors()], 400);
+        }
+
+        $temComplemento = ($request->input('fk_funcao_id') > env('FUNCAO_USUARIO_AUTORIZADOR')) && $request->has('complemento');
+
+        if($temComplemento){
+
+            $rulesPaciente = [
+                'tamanho' => 'required|string',
+                'peso' => 'required|string',
+                'nome_da_mae'=> 'required|string',
+                'raca' => 'required|string',
+                'etnia' => 'sometimes|string',
+                'cns' => 'sometimes|string|size:6'
+            ];
+
+            $rulesMedico = [
+                'cnes' => 'required|string|size:6',
+                'cns' => 'required|numeric',
+                'estabelecimento'=> 'required|string'
+            ];
+
+            $validatorComplement = Validator::make($request->input('complemento'), $request->input('fk_funcao_id') == env('FUNCAO_USUARIO_MEDICO') ? 
+                $rulesMedico : $rulesPaciente);
+
+            if ($validatorComplement->fails()) {
+                return response()->json(["error" => $validatorComplement->errors()], 400);
+            }
+
         }
 
         try{
@@ -38,20 +66,20 @@ class AuthController extends Controller
 
             $usuario = [];
 
-            if($request->input('fk_funcao_id') !== env('FUNCAO_USUARIO_PACIENTE') && $request->input('fk_funcao_id') !== env('FUNCAO_USUARIO_MEDICO')){
+            if(!$temComplemento){
 
                 $usuario = $this->createUserService->execute($request->all());
             }else{
-                //$usuario = $this->createUserService->execute($request->all(), $complemento);
+                $usuario = $this->createUserService->execute($request->except('complemento'), $request->input('complemento'));
             }
        
-            return response()->json(["user" => $usuario], 201);
+            return response()->json(["usuario" => $usuario], 201);
 
         }catch(\Exception $e){
 
             //dd($e);
 
-            return response()->json(["error" => "Não foi possível cadastrar o usuário"]);
+            return response()->json(["error" => "Não foi possível cadastrar o usuário"], 500);
 
         }
 

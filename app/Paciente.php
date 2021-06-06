@@ -2,8 +2,14 @@
 
 namespace App;
 
-class Paciente
+use Illuminate\Database\Eloquent\Model;
+
+class Paciente extends Model
 {
+
+
+    public $timestamps = false;
+    public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *

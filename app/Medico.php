@@ -2,8 +2,12 @@
 
 namespace App;
 
-class Medico
+use Illuminate\Database\Eloquent\Model;
+
+class Medico extends Model
 {
+    public $timestamps = false;
+    public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *

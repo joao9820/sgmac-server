@@ -6,7 +6,7 @@ use App\Medico;
 
 class MedicoRepository {
 
-	public function create(array $dados, $usuario_id){
+	public function create(array $dados){
 
 		return Medico::create($dados);
 

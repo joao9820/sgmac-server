@@ -30,13 +30,17 @@ class CreateUserService {
 
 				if($complemento){
 
+					$complemento['fk_usuario_id'] = $usuario->id_usuario;
+
+					//dd($complemento);
+
 					if($dados['fk_funcao_id'] == env('FUNCAO_USUARIO_PACIENTE')){
 
-					$usuario = $this->pacienteRepository($dados, $complemento);
+						$usuario["complemento"] = $this->pacienteRepository->create($complemento);
 
 					}else{
 
-						$usuario = $this->medicoRepository($dados, $complemento);				
+						$usuario["complemento"] = $this->medicoRepository->create($complemento);				
 					}
 				}
 
