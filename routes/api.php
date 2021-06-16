@@ -21,8 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/signon', 'Api\\AuthController@register');
 Route::post('/signin', 'Api\\AuthController@login');
 
-/*Route::namespace('api')->middleware('apiJWT')->group(function() {
-
-});*/
+Route::namespace('Api')->middleware('apiJWT')->group(function() {
+   Route::get('/responsibilities', 'FuncoesController@index'); 
+});
 
 //Route::post('/signon', 'Api/')

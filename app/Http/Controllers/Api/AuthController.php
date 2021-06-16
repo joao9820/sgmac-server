@@ -22,7 +22,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'nome' => 'required|string',
             'email' => 'required|string|email|unique:usuarios',
-            'cpf'=> 'required|string|min:12|unique',
+            'cpf'=> 'required|string|min:12|unique:usuarios',
             'telefone1' => 'required|string|min:7',
             'password' => 'required|string|confirmed',
             'fk_funcao_id' => 'required|numeric'
@@ -96,12 +96,12 @@ class AuthController extends Controller
 
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json(["error" => $validator->errors()->first()], 400);
         }
 
         //Corrigir a frase
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Usuário e/ou senha incorretos'], 401);
+            return response()->json(['error' => 'E-mail e/ou senha incorreta'], 401);
         }
 
         return $this->respondWithToken($token);
