@@ -29,7 +29,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(["error" => $validator->errors()], 400);
+            return response()->json(["error" => $validator->errors()->first()], 400);
         }
 
         $temComplemento = ($request->input('fk_funcao_id') > env('FUNCAO_USUARIO_AUTORIZADOR')) && $request->has('complemento');
@@ -55,7 +55,7 @@ class AuthController extends Controller
                 $rulesMedico : $rulesPaciente);
 
             if ($validatorComplement->fails()) {
-                return response()->json(["error" => $validatorComplement->errors()], 400);
+                return response()->json(["error" => $validatorComplement->errors()->first()], 400);
             }
 
         }
@@ -79,7 +79,7 @@ class AuthController extends Controller
 
             //dd($e);
 
-            return response()->json(["error" => "Não foi possível cadastrar o usuário"], 500);
+            return response()->json(["error" => $e->getMessage()], 500);
 
         }
 

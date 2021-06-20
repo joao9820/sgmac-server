@@ -68,4 +68,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function funcao(){
+        return $this->belongsTo('App\Funcao', 'fk_funcao_id', 'id_funcao');
+    }
+
 }

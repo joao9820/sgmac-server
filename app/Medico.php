@@ -21,5 +21,9 @@ class Medico extends Model
 
     protected $primaryKey = "fk_usuario_id";
 
+    public function usuario(){
+        return $this->belongsTo('App\User', 'fk_usuario_id', 'id_usuario');
+    }
+
 }
 
