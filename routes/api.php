@@ -24,6 +24,7 @@ Route::post('/signin', 'Api\\AuthController@login');
 Route::namespace('Api')->middleware('apiJWT')->group(function() {
    Route::get('/responsibilities', 'FuncoesController@index');
    Route::get('/medicines', 'MedicamentosController@index');
+   Route::get('/pacients', 'PacientesController@index');
    Route::get('/users', 'UsersController@index');
    Route::get('/illnesses', 'DoencasController@index');
 
