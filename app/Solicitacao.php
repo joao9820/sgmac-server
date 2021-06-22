@@ -24,6 +24,10 @@ class Solicitacao extends Model
 
     protected $primaryKey = "id_solicitacao";
 
+    public function getCriadoEmAttribute(){
+        return date('d/m/Y - H:i:s', strtotime($this->attributes['criado_em']));
+    }
+
     public function medicamentos(){
 
         return $this->belongsToMany('App\Medicamento', 'solicitacao_medicamentos', 'fk_solicitacao_id', 'fk_medicamento_id')
