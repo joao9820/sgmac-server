@@ -16,7 +16,7 @@ class Solicitacao extends Model
      * @var array
      */
     protected $fillable = [
-        'fk_medico_id', 'fk_paciente_id', 'fk_unidade_id', 'fk_doenca_id', 'fk_autorizador_id', 'fk_status_id',
+        'fk_medico_id', 'fk_paciente_id', 'fk_unidade_id', 'fk_doenca_id', 'fk_autorizador_id', 'fk_status_id','observacao',
         'anamnese', 'diagnostico', 'data_inicio', 'data_fim', 
     ];
 
@@ -26,6 +26,14 @@ class Solicitacao extends Model
 
     public function getCriadoEmAttribute(){
         return date('d/m/Y - H:i:s', strtotime($this->attributes['criado_em']));
+    }
+
+    public function getDataInicioAttribute(){
+        return date('d/m/Y', strtotime($this->attributes['data_inicio']));
+    }
+
+    public function getDataFimAttribute(){
+        return date('d/m/Y', strtotime($this->attributes['data_fim']));
     }
 
     public function medicamentos(){

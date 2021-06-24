@@ -7,16 +7,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Services\CreateSolicitacaoService;
+use App\Services\AuthorizeSolicitacaoService;
 use App\Repositories\SolicitacaoRepository;
 
 class SolicitacoesController extends Controller {
 
 	private $createSolicitacaoService;
+    private $authorizeSolicitacaoService;
     private $solicitacaoRepository;
 
-	function __construct(CreateSolicitacaoService $createSolicitacaoService, SolicitacaoRepository $solicitacaoRepository){
+	function __construct(CreateSolicitacaoService $createSolicitacaoService, 
+        AuthorizeSolicitacaoService $authorizeSolicitacaoService
+        ,SolicitacaoRepository $solicitacaoRepository){
 		$this->createSolicitacaoService = $createSolicitacaoService;
         $this->solicitacaoRepository = $solicitacaoRepository;
+        $this->authorizeSolicitacaoService = $authorizeSolicitacaoService;
 	}
 
 	function index(){
@@ -37,7 +42,7 @@ class SolicitacoesController extends Controller {
             'medicamentos.*.mes1' => 'required|boolean',
             'diagnostico' => 'required|string',
             'anamnese' => 'required|string'
-        ]);
+        ], ['medicamentos.*.quantidade' => 'Cada medicamento deve possuir uma quantidade']);
 
         if ($validator->fails()) {
             return response()->json(["error" => $validator->errors()->first()], 400);
@@ -58,5 +63,29 @@ class SolicitacoesController extends Controller {
         }
 
 	}
+
+    function update($id, Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'fk_autorizador_id' => 'required|numeric',
+            'fk_status_id' => 'required|numeric',
+            'observacao' => 'sometimes|string|nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()->first()], 400);
+        }
+
+        try{
+
+            $solicitacao = $this->authorizeSolicitacaoService->execute($id, $request->all());
+
+            return response()->json($solicitacao, 200);
+
+        }catch(\Exception $err){
+            return response()->json(["error" => $err->getMessage()], 500);
+        }        
+
+    }
 
 }

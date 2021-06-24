@@ -26,6 +26,7 @@ Route::namespace('Api')->middleware('apiJWT')->group(function() {
    Route::get('/medicines', 'MedicamentosController@index');
    Route::get('/pacients', 'PacientesController@index');
    Route::get('/users', 'UsersController@index');
+   Route::delete('/users/{id}', 'UsersController@destroy');
    Route::get('/illnesses', 'DoencasController@index');
 
    Route::apiResource('/solicitations', 'SolicitacoesController');
